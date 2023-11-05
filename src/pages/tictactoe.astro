@@ -36,32 +36,108 @@ import Layout from "../layouts/Layout.astro";
    * @param feldNummer Enthält die Nummer des aktuellen Feldes
    */
   function click(feldNummer) {
-    console.log("Gedrücktes Feld: " + feldNummer);
-    // TODO: Komplette Spiellogik programmieren
+    if (gewinner === "U") {
+      zeigeUnentschieden();
+      return;
+    }
+    if (gewinner !== "") {
+      zeigeGewinner(aktuellerSpieler);
+      return;
+    }
+
+    if (!istLeer(feldNummer)) {
+      return;
+    }
+
+    ausfuellen(feldNummer, aktuellerSpieler);
+    if (hatGewonnen(aktuellerSpieler)) {
+      gewinner = aktuellerSpieler;
+      zeigeGewinner(aktuellerSpieler);
+    } else if (allesVoll()) {
+      gewinner = "U";
+      zeigeUnentschieden();
+    } else {
+      wechsleSpieler();
+    }
   }
 
   function zeigeGewinner(spieler) {
-    // TODO: Zeige einen Dialog an, welcher den Gewinner dieser Partie ausgibt.
+    setTimeout(() => {
+      if (confirm("Spieler " + spieler + " hat gewonnen. Noch eine Runde?")) {
+        location.reload();
+      }
+    }, 0);
   }
 
   function zeigeUnentschieden() {
-    // TODO: Zeige einen Dialog an, welcher den Spielern mitteilt, dass es ein Unentschieden gegeben hat.
+    setTimeout(() => {
+      if (confirm("Unentschieden! Noch eine Runde?")) {
+        location.reload();
+      }
+    }, 0);
   }
 
   function hatGewonnen(spieler) {
-    // TODO: Prüfe, ob der aktuelle Spieler irgendwo drei seiner Symbole nacheinander hat. (Vertikal, Diagonal, Horizontal)
+    // Horizontal prüfen
+    if (inhalt(1) === spieler && inhalt(2) === spieler && inhalt(3) === spieler) {
+      return true;
+    }
+    if (inhalt(4) === spieler && inhalt(5) === spieler && inhalt(6) === spieler) {
+      return true;
+    }
+    if (inhalt(7) === spieler && inhalt(8) === spieler && inhalt(9) === spieler) {
+      return true;
+    }
+
+    // Vertikal prüfen
+    if (inhalt(1) === spieler && inhalt(2) === spieler && inhalt(3) === spieler) {
+      return true;
+    }
+    if (inhalt(4) === spieler && inhalt(5) === spieler && inhalt(6) === spieler) {
+      return true;
+    }
+    if (inhalt(7) === spieler && inhalt(8) === spieler && inhalt(9) === spieler) {
+      return true;
+    }
+
+    // Diagonal prüfen
+    if (inhalt(1) === spieler && inhalt(5) === spieler && inhalt(9) === spieler) {
+      return true;
+    }
+    if (inhalt(3) === spieler && inhalt(5) === spieler && inhalt(7) === spieler) {
+      return true;
+    }
+    return false;
   }
 
+  /**
+   * Wechselt den Spieler bzw. das aktuelle Symbol
+   */
   function wechsleSpieler() {
-    // TODO: Verändere die Variable aktuellerSpieler auf den anderen Spieler
+    if (aktuellerSpieler === "X") {
+      aktuellerSpieler = "O";
+    } else {
+      aktuellerSpieler = "X";
+    }
   }
 
+  /**
+   * Prüft, ob das aktuelle Feld noch leer ist
+   */
   function istLeer(feldNummer) {
-    // TODO Prüfe, ob das aktuelle Feld leer ist
+    return inhalt(feldNummer) === "";
   }
 
-  function istUnentschieden() {
-    // TODO: Prüfe, ob es ein unentschieden gegeben hat
+  /**
+   * Prüft ob bereits alle Felder voll sind
+   */
+  function allesVoll() {
+    for (let i = 1; i <= 9; i++) {
+      if (inhalt(i) === "") {
+        return false;
+      }
+    }
+    return true;
   }
 
   /**
