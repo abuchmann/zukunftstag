@@ -1,0 +1,113 @@
+---
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout title="Willkommen bei TicTacToe.">
+  <main>
+    <h1>TicTacToe</h1>
+    <table>
+      <tbody>
+        <tr>
+          <td data-tictactoe-feld="1"></td>
+          <td data-tictactoe-feld="2"></td>
+          <td data-tictactoe-feld="3"></td>
+        </tr>
+        <tr>
+          <td data-tictactoe-feld="4"></td>
+          <td data-tictactoe-feld="5"></td>
+          <td data-tictactoe-feld="6"></td>
+        </tr>
+        <tr>
+          <td data-tictactoe-feld="7"></td>
+          <td data-tictactoe-feld="8"></td>
+          <td data-tictactoe-feld="9"></td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</Layout>
+
+<script>
+  let aktuellerSpieler = "X";
+  let gewinner = "";
+
+  /**
+   * Das ist die Hauptfunktion die immer ausgeführt wird, wenn ein Benutzer auf ein TicTacToe-Feld drückt
+   * @param feldNummer Enthält die Nummer des aktuellen Feldes
+   */
+  function click(feldNummer) {
+    console.log("Gedrücktes Feld: " + feldNummer);
+    // TODO: Komplette Spiellogik programmieren
+  }
+
+  function zeigeGewinner(spieler) {
+    // TODO: Zeige einen Dialog an, welcher den Gewinner dieser Partie ausgibt.
+  }
+
+  function zeigeUnentschieden() {
+    // TODO: Zeige einen Dialog an, welcher den Spielern mitteilt, dass es ein Unentschieden gegeben hat.
+  }
+
+  function hatGewonnen(spieler) {
+    // TODO: Prüfe, ob der aktuelle Spieler irgendwo drei seiner Symbole nacheinander hat. (Vertikal, Diagonal, Horizontal)
+  }
+
+  function wechsleSpieler() {
+    // TODO: Verändere die Variable aktuellerSpieler auf den anderen Spieler
+  }
+
+  function istLeer(feldNummer) {
+    // TODO Prüfe, ob das aktuelle Feld leer ist
+  }
+
+  function istUnentschieden() {
+    // TODO: Prüfe, ob es ein unentschieden gegeben hat
+  }
+
+  /**
+   * Setzt das mitgegebene Symbol ins Feld
+   */
+  function ausfuellen(feldNummer, symbol) {
+    document.querySelector("[data-tictactoe-feld='" + feldNummer + "']").innerHTML = symbol;
+  }
+
+  /**
+   * Gibt den Inhalt eines Feldes zurück
+   */
+  function inhalt(feldNummer) {
+    return document.querySelector("[data-tictactoe-feld='" + feldNummer + "']").innerHTML;
+  }
+
+  // Click verbinden mit Click funktion
+  document.querySelectorAll("[data-tictactoe-feld]").forEach((element) => {
+    /* @ts-ignore */
+    element.addEventListener("click", () => click(element.dataset.tictactoeFeld));
+  });
+</script>
+
+<style>
+  table,
+  td {
+    border: 1px solid black;
+  }
+  td {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 80px;
+  }
+
+  td:after {
+    content: attr(data-tictactoe-feld);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    width: 100%;
+    color: rgba(233, 233, 233, 0.856);
+    left: 0;
+    z-index: -1;
+  }
+</style>
