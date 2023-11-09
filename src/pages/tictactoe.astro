@@ -2,30 +2,113 @@
 import Layout from "../layouts/Layout.astro";
 ---
 
-<Layout title="Willkommen bei TicTacToe.">
-  <main>
-    <h1>TicTacToe</h1>
-    <table>
-      <tbody>
-        <tr>
-          <td data-tictactoe-feld="1"></td>
-          <td data-tictactoe-feld="2"></td>
-          <td data-tictactoe-feld="3"></td>
-        </tr>
-        <tr>
-          <td data-tictactoe-feld="4"></td>
-          <td data-tictactoe-feld="5"></td>
-          <td data-tictactoe-feld="6"></td>
-        </tr>
-        <tr>
-          <td data-tictactoe-feld="7"></td>
-          <td data-tictactoe-feld="8"></td>
-          <td data-tictactoe-feld="9"></td>
-        </tr>
-      </tbody>
-    </table>
-  </main>
-</Layout>
+<!doctype html>
+<html lang="en">
+  <head>
+    <title>ZunkunftsTag 2023 Leon - TicTacToe</title>
+  </head>
+  <body>
+    <nav>
+      <ul>
+        <li><a href="/">Homepage</a></li>
+        <li><a href="/fragebogen">Fragebogen</a></li>
+        <li><a href="/tictactoe">TicTacToe</a></li>
+        <li><a href="/scherensteinpapier">Schere Stein Papier</a></li>
+
+      </ul>
+    </nav>
+    <main>
+      <h1>TicTacToe</h1>
+      <table>
+        <tbody>
+          <tr>
+            <td data-tictactoe-feld="1"></td>
+            <td data-tictactoe-feld="2"></td>
+            <td data-tictactoe-feld="3"></td>
+          </tr>
+          <tr>
+            <td data-tictactoe-feld="4"></td>
+            <td data-tictactoe-feld="5"></td>
+            <td data-tictactoe-feld="6"></td>
+          </tr>
+          <tr>
+            <td data-tictactoe-feld="7"></td>
+            <td data-tictactoe-feld="8"></td>
+            <td data-tictactoe-feld="9"></td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </body>
+</html>
+
+<style>
+  nav {
+    position: sticky;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: azure;
+  }
+
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 10px;
+  }
+
+  a,
+  a:visited {
+    text-decoration: none;
+    color: darkturquoise;
+  }
+
+  li {
+    display: inline;
+    padding: 20px;
+  }
+
+  body {
+    background-color: rgb(192, 102, 0);
+    font-family: Arial, Helvetica, sans-serif;
+    color: darkturquoise;
+    margin: 0;
+  }
+
+  main {
+    padding: 0px 20px;
+  }
+  table {
+    background-image: url("/real.jpeg");
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+  table,
+  td {
+    border: 2px solid black;
+    border-collapse: collapse;
+  }
+  td {
+    width: 100px;
+    height: 100px;
+    position: relative;
+    vertical-align: middle;
+    text-align: center;
+    font-size: 80px;
+  }
+
+  td:after {
+    content: attr(data-tictactoe-feld);
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    width: 100%;
+    color: rgba(233, 233, 233, 0.1);
+    left: 0;
+    z-index: -1;
+  }
+</style>
 
 <script>
   let aktuellerSpieler = "X";
@@ -36,32 +119,83 @@ import Layout from "../layouts/Layout.astro";
    * @param feldNummer Enthält die Nummer des aktuellen Feldes
    */
   function click(feldNummer) {
-    console.log("Gedrücktes Feld: " + feldNummer);
     // TODO: Komplette Spiellogik programmieren
+
+    if (gewinner === "U") {
+      zeigeUnentschieden();
+    } else if (gewinner !== "") {
+      zeigeGewinner(gewinner);
+    } else if (istLeer(feldNummer)) {
+      ausfuellen(feldNummer, aktuellerSpieler);
+      if (hatGewonnen(aktuellerSpieler)) {
+        gewinner = aktuellerSpieler;
+        zeigeGewinner(aktuellerSpieler);
+      } else if (istUnentschieden()) {
+        zeigeUnentschieden();
+        gewinner = "U";
+      }
+      wechsleSpieler();
+    }
   }
 
   function zeigeGewinner(spieler) {
+    setTimeout(() => {
+      if (confirm("Spieler " + spieler + " hat gewonnen. Noch ein Spiel?")) {
+        // neu starten
+        location.reload();
+      }
+    }, 0);
+
     // TODO: Zeige einen Dialog an, welcher den Gewinner dieser Partie ausgibt.
   }
 
   function zeigeUnentschieden() {
     // TODO: Zeige einen Dialog an, welcher den Spielern mitteilt, dass es ein Unentschieden gegeben hat.
+    setTimeout(() => {
+      if (confirm("Unentschieden! Noch ein Spiel?")) {
+        // neu starten
+        location.reload();
+      }
+    }, 0);
   }
 
   function hatGewonnen(spieler) {
     // TODO: Prüfe, ob der aktuelle Spieler irgendwo drei seiner Symbole nacheinander hat. (Vertikal, Diagonal, Horizontal)
-  }
 
-  function wechsleSpieler() {
-    // TODO: Verändere die Variable aktuellerSpieler auf den anderen Spieler
-  }
-
-  function istLeer(feldNummer) {
-    // TODO Prüfe, ob das aktuelle Feld leer ist
+    // Vertikal
+    if (inhalt(1) === spieler && inhalt(4) === spieler && inhalt(7) === spieler) return true;
+    if (inhalt(2) === spieler && inhalt(5) === spieler && inhalt(8) === spieler) return true;
+    if (inhalt(3) === spieler && inhalt(6) === spieler && inhalt(9) === spieler) return true;
+    // Horizontal
+    if (inhalt(1) === spieler && inhalt(2) === spieler && inhalt(3) === spieler) return true;
+    if (inhalt(4) === spieler && inhalt(5) === spieler && inhalt(6) === spieler) return true;
+    if (inhalt(7) === spieler && inhalt(8) === spieler && inhalt(9) === spieler) return true;
+    // Diagonal
+    if (inhalt(1) === spieler && inhalt(5) === spieler && inhalt(9) === spieler) return true;
+    if (inhalt(3) === spieler && inhalt(5) === spieler && inhalt(7) === spieler) return true;
+    else return false;
   }
 
   function istUnentschieden() {
     // TODO: Prüfe, ob es ein unentschieden gegeben hat
+
+    for (let nummer = 1; nummer <= 9; nummer = nummer + 1) {
+      if (istLeer(nummer)) return false;
+    }
+
+    return true;
+  }
+
+  function wechsleSpieler() {
+    // TODO: Verändere die Variable aktuellerSpieler auf den anderen Spieler
+    if (aktuellerSpieler === "X") aktuellerSpieler = "O";
+    else aktuellerSpieler = "X";
+  }
+
+  function istLeer(feldNummer) {
+    // TODO Prüfe, ob das aktuelle Feld leer ist
+    if (inhalt(feldNummer) === "") return true;
+    else return false;
   }
 
   /**
@@ -84,30 +218,3 @@ import Layout from "../layouts/Layout.astro";
     element.addEventListener("click", () => click(element.dataset.tictactoeFeld));
   });
 </script>
-
-<style>
-  table,
-  td {
-    border: 1px solid black;
-  }
-  td {
-    width: 100px;
-    height: 100px;
-    position: relative;
-    vertical-align: middle;
-    text-align: center;
-    font-size: 80px;
-  }
-
-  td:after {
-    content: attr(data-tictactoe-feld);
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    text-align: center;
-    width: 100%;
-    color: rgba(233, 233, 233, 0.856);
-    left: 0;
-    z-index: -1;
-  }
-</style>
